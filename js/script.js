@@ -39,7 +39,7 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
     //Таймер
-    const deadline = '2022-02-01';
+    const deadline = '2022-05-21';
 
     function getTimeRemaining(endtime) {
         const t = Date.parse(endtime) - Date.parse(new Date()),
@@ -89,4 +89,98 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     setClock('.timer', deadline)
+
+
+
+
+    //Modal
+
+    const modalTrigger = document.querySelectorAll('[data-modal]'),
+        modal = document.querySelector('.modal'),
+        modalCloseBtn = document.querySelector('[data-close]');
+
+
+    function openModal() {
+        modal.classList.add('show');
+        modal.classList.remove('hide');
+        document.body.style.overflow = 'hidden';
+        clearInterval(modalTimerId);
+    }
+
+    modalTrigger.forEach(btn => {
+        btn.addEventListener('click', openModal);
+    });
+
+
+    function closeModal() {
+        modal.classList.add('hide');
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+
+
+    modalCloseBtn.addEventListener('click', closeModal);
+
+
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.code === "Escape" && modal.classList.contains('show')) {
+            closeModal();
+        }
+    });
+
+
+    // const modalTimerId = setTimeout(openModal, 6000);
+
+
+    function showModalByScroll() {
+        if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight - 1) {
+            openModal();
+            window.removeEventListener('scroll', showModalByScroll);
+        }
+    }
+
+    window.addEventListener('scroll', showModalByScroll);
+
+
+    // класс карточки 
+    class MenuCard {
+        constructor(src, alt, title, descr, price) {
+            this.src = src;
+            this.alt = alt;
+            this.title = title;
+            this.descr = descr;
+            this.price = price;
+            this.transfer = 64;
+            this.changeToRUB();
+        }
+        changeToRUB() {
+            this.price = this.price * this.transfer;
+        }
+
+        render() {
+            const element = document.createElement('div');
+            element.innerHTML = `
+                <div class="menu__item">
+                     <img src="img/tabs/vegy.jpg" alt="vegy" />
+                     <h3 class="menu__item-subtitle">Меню "Фитнес"</h3>
+                     <div class="menu__item-descr">
+                        Меню "Фитнес" - это новый подход к приготовлению блюд: больше
+                         свежих овощей и фруктов. Продукт активных и здоровых людей. Это
+                        абсолютно новый продукт с оптимальной ценой и высоким качеством!
+                    </div>
+                      <div class="menu__item-divider"></div>
+                    <div class="menu__item-price">
+                        <div class="menu__item-cost">Цена:</div>
+                        <div class="menu__item-total"><span>229</span> грн/день</div>
+                    </div>
+                 </div>
+            `;
+        }
+    }
 });
